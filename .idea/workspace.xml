@@ -34,7 +34,16 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="settings.editor.selected.configurable" value="project.propVCSSupport.Mappings" />
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="JUnit.Tests">
+    <configuration name="Tests" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="selenium2" />
+      <option name="PACKAGE_NAME" value="" />
+      <option name="MAIN_CLASS_NAME" value="Tests" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="Tests.testOpenLink" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="selenium2" />
       <option name="PACKAGE_NAME" value="" />
@@ -47,6 +56,7 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="JUnit.Tests" />
         <item itemvalue="JUnit.Tests.testOpenLink" />
       </list>
     </recent_temporary>
@@ -65,6 +75,38 @@
     <servers />
   </component>
   <component name="WindowStateProjectService">
+    <state width="1750" height="275" key="GridCell.Tab.0.bottom" timestamp="1606562461023">
+      <screen x="0" y="23" width="1792" height="1015" />
+    </state>
+    <state width="1750" height="275" key="GridCell.Tab.0.bottom/0.23.1792.1015@0.23.1792.1015" timestamp="1606562461023" />
+    <state width="1750" height="275" key="GridCell.Tab.0.center" timestamp="1606562461022">
+      <screen x="0" y="23" width="1792" height="1015" />
+    </state>
+    <state width="1750" height="275" key="GridCell.Tab.0.center/0.23.1792.1015@0.23.1792.1015" timestamp="1606562461022" />
+    <state width="1750" height="275" key="GridCell.Tab.0.left" timestamp="1606562461021">
+      <screen x="0" y="23" width="1792" height="1015" />
+    </state>
+    <state width="1750" height="275" key="GridCell.Tab.0.left/0.23.1792.1015@0.23.1792.1015" timestamp="1606562461021" />
+    <state width="1750" height="275" key="GridCell.Tab.0.right" timestamp="1606562461022">
+      <screen x="0" y="23" width="1792" height="1015" />
+    </state>
+    <state width="1750" height="275" key="GridCell.Tab.0.right/0.23.1792.1015@0.23.1792.1015" timestamp="1606562461022" />
+    <state width="1750" height="340" key="GridCell.Tab.1.bottom" timestamp="1606562460323">
+      <screen x="0" y="23" width="1792" height="1015" />
+    </state>
+    <state width="1750" height="340" key="GridCell.Tab.1.bottom/0.23.1792.1015@0.23.1792.1015" timestamp="1606562460323" />
+    <state width="1750" height="340" key="GridCell.Tab.1.center" timestamp="1606562460323">
+      <screen x="0" y="23" width="1792" height="1015" />
+    </state>
+    <state width="1750" height="340" key="GridCell.Tab.1.center/0.23.1792.1015@0.23.1792.1015" timestamp="1606562460323" />
+    <state width="1750" height="340" key="GridCell.Tab.1.left" timestamp="1606562460323">
+      <screen x="0" y="23" width="1792" height="1015" />
+    </state>
+    <state width="1750" height="340" key="GridCell.Tab.1.left/0.23.1792.1015@0.23.1792.1015" timestamp="1606562460323" />
+    <state width="1750" height="340" key="GridCell.Tab.1.right" timestamp="1606562460323">
+      <screen x="0" y="23" width="1792" height="1015" />
+    </state>
+    <state width="1750" height="340" key="GridCell.Tab.1.right/0.23.1792.1015@0.23.1792.1015" timestamp="1606562460323" />
     <state x="397" y="171" key="SettingsEditor" timestamp="1606135292624">
       <screen x="0" y="23" width="1792" height="1019" />
     </state>

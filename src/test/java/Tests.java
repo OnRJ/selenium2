@@ -49,15 +49,15 @@ public class Tests {
 
         // Проверка стикеров в блоке "Most Popular"
         int sizeListMostPopular = driver.findElements(By
-                .cssSelector("div#box-most-popular li.product.column.shadow.hover-light"))
+                .cssSelector("div#box-most-popular li.product"))
                 .size();
 
         for (int i = 1; i <= sizeListMostPopular; i++) {
             int countStickers = driver.findElements(By
-                    .cssSelector("div#box-most-popular li.product.column.shadow.hover-light:nth-child(" + i + ") div.sticker"))
+                    .cssSelector("div#box-most-popular li.product:nth-child(" + i + ") div.sticker"))
                     .size();
 
-            if (countStickers > 1){
+            if (countStickers != 1){
                 throw new StickerException("Неверное кол-во стикеров на товаре №" + i + " в разделе \"Most Popular\"");
             }
         }
@@ -65,15 +65,15 @@ public class Tests {
 
         // Проверка стикеров в блоке "Campaigns"
         int sizeListCampaigns = driver.findElements(By
-                .cssSelector("div#box-campaigns li.product.column.shadow.hover-light"))
+                .cssSelector("div#box-campaigns li.product"))
                 .size();
 
         for (int i = 1; i <= sizeListCampaigns; i++) {
             int countStickers = driver.findElements(By
-                    .cssSelector("div#box-campaigns li.product.column.shadow.hover-light:nth-child(" + i + ") div.sticker"))
+                    .cssSelector("div#box-campaigns li.product:nth-child(" + i + ") div.sticker"))
                     .size();
 
-            if (countStickers > 1){
+            if (countStickers != 1){
                 throw new StickerException("Неверное кол-во стикеров на товаре №" + i + " в разделе \"Campaigns\"");
             }
         }
@@ -81,15 +81,15 @@ public class Tests {
 
         // Проверка стикеров в блоке "Latest products"
         int sizeListLatestProducts = driver.findElements(By
-                .cssSelector("div#box-latest-products li.product.column.shadow.hover-light"))
+                .cssSelector("div#box-latest-products li.product"))
                 .size();
 
         for (int i = 1; i <= sizeListLatestProducts; i++) {
             int countStickers = driver.findElements(By
-                    .cssSelector("div#box-latest-products li.product.column.shadow.hover-light:nth-child(" + i + ") div.sticker"))
+                    .cssSelector("div#box-latest-products li.product:nth-child(" + i + ") div.sticker"))
                     .size();
 
-            if (countStickers > 1){
+            if (countStickers != 1){
                 throw new StickerException("Неверное кол-во стикеров на товаре №" + i + " в разделе \"Latest products\"");
             }
         }

@@ -4,13 +4,18 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.support.Color;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class Tests {
     WebDriver driver;
@@ -172,14 +177,152 @@ public class Tests {
                 geoZones.add(listCountry.getText());
             }
 
-            List<String> countriesForComparison = new ArrayList<String>(geoZones);
-            Collections.sort(countriesForComparison);
+            List<String> geoZonesForComparison = new ArrayList<String>(geoZones);
+            Collections.sort(geoZonesForComparison);
 
-            if(!countriesForComparison.equals(geoZones)) {
+            if(!geoZonesForComparison.equals(geoZones)) {
                 throw new SortException("Гео-зоны стран расположены не в алфавитном порядке");
             }
 
             driver.get("http://192.168.64.2/litecart/admin/?app=geo_zones&doc=geo_zones");
         }
+    }
+
+    @Test
+    public void testOpenPageProduct() {
+        driver.get("http://192.168.64.2/litecart/en/");
+
+        // Наименование продукта на главной странице
+        String nameProductMainPage = driver.findElement(By
+                .cssSelector("div#box-campaigns li.product:nth-child(1) div.name"))
+                .getText();
+
+        // Старая цена продукта на главной странице
+        String regularPriceMainPage = driver.findElement(By
+                .cssSelector("div#box-campaigns li.product:nth-child(1) s.regular-price"))
+                .getText();
+
+        // Акционная цена продукта на главной странице
+        String campaignPriceMainPage = driver.findElement(By
+                .cssSelector("div#box-campaigns li.product:nth-child(1) strong.campaign-price"))
+                .getText();
+
+        // Размер старой цены на главной странице
+        Dimension sizeRegularPriceMainPage = driver.findElement(By
+                .cssSelector("div#box-campaigns li.product:nth-child(1) s.regular-price"))
+                .getSize();
+
+        // Размер акционной цены на главной странице
+        Dimension sizeCampaignPriceMainPage = driver.findElement(By
+                .cssSelector("div#box-campaigns li.product:nth-child(1) strong.campaign-price"))
+                .getSize();
+
+        // Цвет акционной цены на главной странице
+        Color colorCampaignPriceMainPage = Color.fromString(driver.findElement(By
+                .cssSelector("div#box-campaigns li.product:nth-child(1) strong.campaign-price"))
+                .getCssValue("color"));
+
+        // Размер старой цены на главной странице
+        Color colorRegularPriceMainPage = Color.fromString(driver.findElement(By
+                .cssSelector("div#box-campaigns li.product:nth-child(1) s.regular-price"))
+                .getCssValue("color"));
+
+        // Получение стилей старой цены на главной странице
+        String styleRegularPriceMainPage = driver.findElement(By
+                .cssSelector("div#box-campaigns li.product:nth-child(1) s.regular-price"))
+                .getCssValue("text-decoration");
+
+        // Получение толщины шрифта акционной цены на главной странице
+        int styleCampaignPriceMainPage = Integer.parseInt(driver.findElement(By
+                .cssSelector("div#box-campaigns li.product:nth-child(1) strong.campaign-price"))
+                .getCssValue("font-weight"));
+
+        // Переход на страницу товара
+        driver.findElement(By.cssSelector("div#box-campaigns li.product:nth-child(1) div.name")).click();
+
+        // Размер старой цены на странице продукта
+        Dimension sizeRegularPriceProductPage = driver.findElement(By
+                .cssSelector("div.information s.regular-price"))
+                .getSize();
+
+        // Размер акционной цены на странице продукта
+        Dimension sizeCampaignPriceProductPage = driver.findElement(By
+                .cssSelector("div.information strong.campaign-price"))
+                .getSize();
+
+        // Получение стилей старой цены на странице продукта
+        String styleRegularPriceProductPage = driver.findElement(By
+                .cssSelector("div.information s.regular-price"))
+                .getCssValue("text-decoration");
+
+        // Получение толщины шрифта акционной цены на главной странице
+        int styleCampaignPriceProductPage = Integer.parseInt(driver.findElement(By
+                .cssSelector("div.information strong.campaign-price"))
+                .getCssValue("font-weight"));
+
+        // Цвет акционной цены на странице продукта
+        Color colorCampaignPriceProductPage = Color.fromString(driver.findElement(By
+                .cssSelector("div.information strong.campaign-price"))
+                .getCssValue("color"));
+
+        // Цвет старой цены на главной странице
+        Color colorRegularPriceProductPage = Color.fromString(driver.findElement(By
+                .cssSelector("div.information s.regular-price"))
+                .getCssValue("color"));
+
+        // Проверка, что названия на главной странице и на странице продукта одинаковые
+        assertEquals(nameProductMainPage, driver.findElement(By
+                .cssSelector("h1.title"))
+                .getText());
+
+        // Проверка, что старая цена на главной странице и на странице продукта одинаковые
+        assertEquals(regularPriceMainPage, driver.findElement(By
+                .cssSelector("div.information s.regular-price"))
+                .getText());
+
+        // Проверка, что акционная цена на главной странице и на странице продукта одинаковые
+        assertEquals(campaignPriceMainPage, driver.findElement(By
+                .cssSelector("div.information strong.campaign-price"))
+                .getText());
+
+        // Проверка, что старая цена зачеркнута на главной странице
+        assertTrue(styleRegularPriceMainPage.contains("line-through"));
+
+        // Проверка, что старая цена зачеркнута на странице продукта
+        assertTrue(styleRegularPriceProductPage.contains("line-through"));
+
+        // Проверка цвета старой цены на главной странице
+        assertTrue(colorRegularPriceMainPage.getColor().getRed()
+                == colorRegularPriceMainPage.getColor().getGreen()
+                && colorRegularPriceMainPage.getColor().getRed()
+                == colorRegularPriceMainPage.getColor().getBlue());
+
+        // Проверка цвета акционной цены на главной странице
+        assertTrue(colorCampaignPriceMainPage.getColor().getGreen() == 0
+                && colorCampaignPriceMainPage.getColor().getBlue() == 0);
+
+        // Проверка жирности шрифта для акционной цены на главной странице
+        assertTrue(styleCampaignPriceMainPage >= 700);
+
+        // Проверка жирности шрифта для акционной цены на странице продукта
+        assertTrue(styleCampaignPriceProductPage >= 700);
+
+        // Проверка цвета старой цены на странице продукта
+        assertTrue(colorRegularPriceProductPage.getColor().getRed()
+                == colorRegularPriceProductPage.getColor().getGreen()
+                && colorRegularPriceProductPage.getColor().getRed()
+                == colorRegularPriceProductPage.getColor().getBlue());
+
+        // Проверка цвета акционной цены на странице продукта
+        assertTrue(colorCampaignPriceProductPage.getColor().getGreen() == 0
+                && colorCampaignPriceProductPage.getColor().getBlue() == 0);
+
+        // Проверка размера цен на главной странице
+        assertTrue(sizeCampaignPriceMainPage.height > sizeRegularPriceMainPage.height
+                && sizeCampaignPriceMainPage.width > sizeRegularPriceMainPage.width);
+
+        // Проверка размера цен на странице продукта
+        assertTrue(sizeCampaignPriceProductPage.height > sizeRegularPriceProductPage.height
+                && sizeCampaignPriceProductPage.width > sizeRegularPriceProductPage.width);
     }
 }

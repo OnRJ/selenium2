@@ -324,4 +324,54 @@ public class Tests {
         // Проверка размера цен на странице продукта
         assertTrue(sizeCampaignPriceProductPage > sizeRegularPriceProductPage);
     }
+
+    @Test
+    public void testUserRegistration() {
+        String randomNumbers = generateNumbers(10);
+
+        driver.get("http://192.168.64.2/litecart/en/");
+        driver.findElement(By.cssSelector("form[name=login_form] tr:nth-child(5)")).click();
+
+        // Создание нового аккаунта и автоматический вход
+        driver.findElement(By.cssSelector("input[name=tax_id]")).sendKeys("908234432");
+        driver.findElement(By.cssSelector("input[name=company]")).sendKeys("TestCompany");
+        driver.findElement(By.cssSelector("input[name=firstname]")).sendKeys("Firstname");
+        driver.findElement(By.cssSelector("input[name=lastname]")).sendKeys("Lastname");
+        driver.findElement(By.cssSelector("input[name=address1]")).sendKeys("Address 123");
+        driver.findElement(By.cssSelector("input[name=postcode]")).sendKeys("12345");
+        driver.findElement(By.cssSelector("input[name=city]")).sendKeys("City");
+        driver.findElement(By.cssSelector("span.select2-selection__rendered")).click();
+        driver.findElement(By.cssSelector("input.select2-search__field")).sendKeys("United States");
+        driver.findElement(By.cssSelector("li.select2-results__option:first-child")).click();
+        driver.findElement(By.cssSelector("input[name=email]")).sendKeys(randomNumbers + "@google.com");
+        driver.findElement(By.cssSelector("input[name=phone]")).sendKeys(randomNumbers);
+        driver.findElement(By.cssSelector("input[name=password]")).sendKeys(randomNumbers);
+        driver.findElement(By.cssSelector("input[name=confirmed_password]")).sendKeys(randomNumbers);
+        driver.findElement(By.cssSelector("button[name=create_account]")).click();
+        driver.findElement(By.cssSelector("input[name=password]")).sendKeys(randomNumbers);
+        driver.findElement(By.cssSelector("input[name=confirmed_password]")).sendKeys(randomNumbers);
+        driver.findElement(By.cssSelector("button[name=create_account]")).click();
+
+        //Выход из аккаунта
+        driver.findElement(By.cssSelector("ul.list-vertical > li:nth-child(5) a")).click();
+
+        //Повторный вход в аккаунт
+        driver.findElement(By.cssSelector("input[name=email]")).sendKeys(randomNumbers + "@google.com");
+        driver.findElement(By.cssSelector("input[name=password]")).sendKeys(randomNumbers);
+        driver.findElement(By.cssSelector("button[name=login]")).click();
+
+        //Повторный выход
+        driver.findElement(By.cssSelector("ul.list-vertical > li:nth-child(5) a")).click();
+    }
+
+    private String generateNumbers(int count) {
+        final Random random = new Random();
+        String result = "";
+
+        for(int i = 0; i < count; i++){
+            result += String.valueOf(random.nextInt(10));
+        }
+
+        return result;
+    }
 }

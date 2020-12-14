@@ -13,6 +13,7 @@ import org.openqa.selenium.support.Color;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -208,21 +209,21 @@ public class Tests {
                 .getText();
 
         // Размер старой цены на главной странице
-        Dimension sizeRegularPriceMainPage = driver.findElement(By
+        double sizeRegularPriceMainPage = Double.parseDouble(driver.findElement(By
                 .cssSelector("div#box-campaigns li.product:nth-child(1) s.regular-price"))
-                .getSize();
+                .getCssValue("font-size").replace("px", ""));
 
         // Размер акционной цены на главной странице
-        Dimension sizeCampaignPriceMainPage = driver.findElement(By
+        double sizeCampaignPriceMainPage = Double.parseDouble(driver.findElement(By
                 .cssSelector("div#box-campaigns li.product:nth-child(1) strong.campaign-price"))
-                .getSize();
+                .getCssValue("font-size").replace("px", ""));
 
         // Цвет акционной цены на главной странице
         Color colorCampaignPriceMainPage = Color.fromString(driver.findElement(By
                 .cssSelector("div#box-campaigns li.product:nth-child(1) strong.campaign-price"))
                 .getCssValue("color"));
 
-        // Размер старой цены на главной странице
+        // Цвет старой цены на главной странице
         Color colorRegularPriceMainPage = Color.fromString(driver.findElement(By
                 .cssSelector("div#box-campaigns li.product:nth-child(1) s.regular-price"))
                 .getCssValue("color"));
@@ -241,14 +242,14 @@ public class Tests {
         driver.findElement(By.cssSelector("div#box-campaigns li.product:nth-child(1) div.name")).click();
 
         // Размер старой цены на странице продукта
-        Dimension sizeRegularPriceProductPage = driver.findElement(By
+        double sizeRegularPriceProductPage = Double.parseDouble(driver.findElement(By
                 .cssSelector("div.information s.regular-price"))
-                .getSize();
+                .getCssValue("font-size").replace("px", ""));
 
         // Размер акционной цены на странице продукта
-        Dimension sizeCampaignPriceProductPage = driver.findElement(By
+        double sizeCampaignPriceProductPage = Double.parseDouble(driver.findElement(By
                 .cssSelector("div.information strong.campaign-price"))
-                .getSize();
+                .getCssValue("font-size").replace("px", ""));
 
         // Получение стилей старой цены на странице продукта
         String styleRegularPriceProductPage = driver.findElement(By
@@ -318,11 +319,9 @@ public class Tests {
                 && colorCampaignPriceProductPage.getColor().getBlue() == 0);
 
         // Проверка размера цен на главной странице
-        assertTrue(sizeCampaignPriceMainPage.height > sizeRegularPriceMainPage.height
-                && sizeCampaignPriceMainPage.width > sizeRegularPriceMainPage.width);
+        assertTrue(sizeCampaignPriceMainPage > sizeRegularPriceMainPage);
 
         // Проверка размера цен на странице продукта
-        assertTrue(sizeCampaignPriceProductPage.height > sizeRegularPriceProductPage.height
-                && sizeCampaignPriceProductPage.width > sizeRegularPriceProductPage.width);
+        assertTrue(sizeCampaignPriceProductPage > sizeRegularPriceProductPage);
     }
 }

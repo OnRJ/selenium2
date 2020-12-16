@@ -1,19 +1,22 @@
+import Exceptions.ProductException;
 import Exceptions.SortException;
 import Exceptions.StickerException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.By;
-import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.support.Color;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -22,14 +25,15 @@ public class Tests {
     WebDriver driver;
 
     @Before
-    public void setUp(){
+    public void setUp() {
         System.setProperty("webdriver.gecko.driver", "/Users/ruathn7/Documents/geckodriver");
         System.setProperty(FirefoxDriver.SystemProperty.DRIVER_USE_MARIONETTE, "true");
         driver = new FirefoxDriver();
+        driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
     }
 
     @After
-    public void tearDown(){
+    public void tearDown() {
         driver.quit();
     }
 
@@ -56,7 +60,7 @@ public class Tests {
     }
 
     @Test
-    public void testCheckStickers(){
+    public void testCheckStickers() {
         driver.get("http://192.168.64.2/litecart/en/");
 
         // Проверка стикеров в блоке "Most Popular"
@@ -362,6 +366,68 @@ public class Tests {
 
         //Повторный выход
         driver.findElement(By.cssSelector("ul.list-vertical > li:nth-child(5) a")).click();
+    }
+
+    @Test
+    public void testAddNewProduct() throws IOException {
+        String nameNewProduct = "TestProduct" + generateNumbers(10);
+
+        driver.get("http://192.168.64.2/litecart/admin");
+        driver.findElement(By.name("username")).sendKeys("admin");
+        driver.findElement(By.name("password")).sendKeys("admin");
+        driver.findElement(By.name("remember_me")).click();
+        driver.findElement(By.name("login")).click();
+
+        driver.findElement(By.cssSelector("ul#box-apps-menu li:nth-child(2) a")).click();
+        driver.findElement(By.cssSelector("td#content > div > a.button:nth-child(2)")).click();
+
+        // Заполнение информации на вкладке "General"
+        driver.findElement(By.cssSelector("input[name=status][value='1']")).click();
+        driver.findElement(By.cssSelector("input[name='name[en]']")).sendKeys(nameNewProduct);
+        driver.findElement(By.cssSelector("input[name=code]")).sendKeys("123");
+        driver.findElement(By.cssSelector("div.input-wrapper tr:nth-child(4) td:nth-child(1)")).click();
+        driver.findElement(By.cssSelector("input[name=quantity]")).clear();
+        driver.findElement(By.cssSelector("input[name=quantity]")).sendKeys("10");
+        driver.findElement(By.cssSelector("input[type=file]"))
+                .sendKeys(new File("../selenium2/src/test/java/resources/cat.png").getCanonicalPath());
+        driver.findElement(By.cssSelector("input[name=date_valid_from]")).sendKeys("2022-11-12");
+        driver.findElement(By.cssSelector("input[name=date_valid_to]")).sendKeys("2022-11-12");
+
+        // Заполнение информации на вкладке "Information"
+        driver.findElement(By.cssSelector("ul.index li:nth-child(2)")).click();
+        driver.findElement(By.cssSelector("select[name=manufacturer_id]")).click();
+        driver.findElement(By.cssSelector("select[name=manufacturer_id] option[value='1']")).click();
+        driver.findElement(By.cssSelector("input[name=keywords]")).sendKeys("keywords");
+        driver.findElement(By.cssSelector("input[name='short_description[en]']")).sendKeys("short description");
+        driver.findElement(By.cssSelector("div.trumbowyg-editor")).sendKeys("description");
+        driver.findElement(By.cssSelector("input[name='head_title[en]']")).sendKeys("head title");
+        driver.findElement(By.cssSelector("input[name='meta_description[en]']")).sendKeys("meta description");
+
+        // Заполнение информации на вкладке "Prices"
+        driver.findElement(By.cssSelector("ul.index li:nth-child(4)")).click();
+        driver.findElement(By.cssSelector("input[name=purchase_price]")).clear();
+        driver.findElement(By.cssSelector("input[name=purchase_price]")).sendKeys("10");
+        driver.findElement(By.cssSelector("select[name=purchase_price_currency_code] option[value='USD']")).click();
+        driver.findElement(By.cssSelector("input[name='prices[USD]']")).sendKeys("11");
+        driver.findElement(By.cssSelector("input[name='prices[EUR]']")).sendKeys("12");
+        driver.findElement(By.cssSelector("input[name='gross_prices[USD]']")).clear();
+        driver.findElement(By.cssSelector("input[name='gross_prices[USD]']")).sendKeys("1");
+        driver.findElement(By.cssSelector("input[name='gross_prices[EUR]']")).clear();
+        driver.findElement(By.cssSelector("input[name='gross_prices[EUR]']")).sendKeys("2");
+
+        // Сохранение данных по новому товару
+        driver.findElement(By.cssSelector("button[name=save]")).click();
+
+        // Проверка, что товар появился в каталоге
+        int sizeList = driver.findElements(By.cssSelector("table.dataTable a")).size();
+
+        for (int i = 0; i < sizeList; i++) {
+            if (driver.findElements(By.cssSelector("table.dataTable a")).get(i).getText().equals(nameNewProduct)) {
+                return;
+            }
+        }
+
+        throw new ProductException("Товар не был добавлен в каталог");
     }
 
     private String generateNumbers(int count) {

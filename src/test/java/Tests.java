@@ -9,6 +9,8 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.support.Color;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.io.File;
 import java.io.IOException;
@@ -430,14 +432,58 @@ public class Tests {
         throw new ProductException("Товар не был добавлен в каталог");
     }
 
-    private String generateNumbers(int count) {
-        final Random random = new Random();
-        String result = "";
+    @Test
+    public void testAddingAndRemoveItemFromCart() {
+        WebDriverWait wait = new WebDriverWait(driver, 10);
+        driver.get("http://192.168.64.2/litecart/en/");
+        int quantityInCart = driver.findElements(By.cssSelector("table.dataTable td.item")).size();;
 
-        for(int i = 0; i < count; i++){
-            result += String.valueOf(random.nextInt(10));
+        // Добавление товаров, пока в корзине не будет 3 товаров
+        for (int i = 0; i < 3 - quantityInCart; i++) {
+            // Переход на страницу товара
+            driver.findElement(By.cssSelector("div.content li.product")).click();
+            int quantityBeforeAdding = Integer.parseInt(driver.findElement(By.cssSelector("div#cart span.quantity")).getText());
+
+            // Выбор размера товара, если есть такая возможность
+            if (driver.findElements(By.cssSelector("[name='options[Size]']")).size() > 0) {
+                driver.findElement(By.cssSelector("[name='options[Size]'] option[value=Small]")).click();
+            }
+            // Добавление товара в корзину
+            driver.findElement(By.cssSelector("button[name=add_cart_product]")).click();
+
+            // Ожидание, кол-во товара в корзине должно увеличится на единицу
+            wait.until(ExpectedConditions.textToBe(By.cssSelector("div#cart span.quantity"), String.valueOf(quantityBeforeAdding + 1)));
+
+            driver.get("http://192.168.64.2/litecart/en/");
         }
 
-        return result;
+        // Переход в корзину
+        driver.findElement(By.cssSelector("div#cart a.link")).click();
+
+        // Получение текущего кол-ва товаров в корзине
+        quantityInCart = driver.findElements(By.cssSelector("table.dataTable td.item")).size();
+
+        // Удаление товаров по одному из корзины
+        for (int i = 0; i < quantityInCart; i++) {
+            int quantityBeforeDeletion = driver.findElements(By.cssSelector("table.dataTable td.item")).size();
+            WebElement lastItemInTheTable =  driver.findElements(By.cssSelector("table.dataTable td.item")).get(quantityBeforeDeletion - 1);
+
+            // Удаление товара
+            driver.findElements(By.cssSelector("button[name=remove_cart_item]")).get(0).click();
+
+            // Ожидание, пока товар не исчезнет из таблицы
+            wait.until(ExpectedConditions.invisibilityOf(lastItemInTheTable));
+        }
+    }
+
+    private String generateNumbers(int count) {
+        final Random random = new Random();
+        StringBuilder result = new StringBuilder();
+
+        for(int i = 0; i < count; i++){
+            result.append(random.nextInt(10));
+        }
+
+        return result.toString();
     }
 }

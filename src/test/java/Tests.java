@@ -9,15 +9,13 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.support.Color;
+import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.assertEquals;
@@ -42,10 +40,7 @@ public class Tests {
     @Test
     public void testCheckList() {
         driver.get("http://192.168.64.2/litecart/admin");
-        driver.findElement(By.name("username")).sendKeys("admin");
-        driver.findElement(By.name("password")).sendKeys("admin");
-        driver.findElement(By.name("remember_me")).click();
-        driver.findElement(By.name("login")).click();
+        loginAdminPanel();
 
         int sizeList = driver.findElements(By.cssSelector("ul#box-apps-menu > li#app-")).size();
         for (int i = 1; i <= sizeList; i++) {
@@ -116,10 +111,7 @@ public class Tests {
     @Test
     public void testCheckSortCountriesAndZones() {
         driver.get("http://192.168.64.2/litecart/admin/?app=countries&doc=countries");
-        driver.findElement(By.name("username")).sendKeys("admin");
-        driver.findElement(By.name("password")).sendKeys("admin");
-        driver.findElement(By.name("remember_me")).click();
-        driver.findElement(By.name("login")).click();
+        loginAdminPanel();
 
         // Проверка, что страны расположены в алфавитном порядке
         List<String> countries = new ArrayList<String>();
@@ -166,10 +158,7 @@ public class Tests {
     @Test
     public void testCheckSortGeoZones() {
         driver.get("http://192.168.64.2/litecart/admin/?app=geo_zones&doc=geo_zones");
-        driver.findElement(By.name("username")).sendKeys("admin");
-        driver.findElement(By.name("password")).sendKeys("admin");
-        driver.findElement(By.name("remember_me")).click();
-        driver.findElement(By.name("login")).click();
+        loginAdminPanel();
 
         // Проверка, что гео-зоны стран расположены в алфавитном порядке
         int sizeListCountries = driver.findElements(By.cssSelector("form[name=geo_zones_form] td:nth-child(3)")).size();
@@ -375,10 +364,7 @@ public class Tests {
         String nameNewProduct = "TestProduct" + generateNumbers(10);
 
         driver.get("http://192.168.64.2/litecart/admin");
-        driver.findElement(By.name("username")).sendKeys("admin");
-        driver.findElement(By.name("password")).sendKeys("admin");
-        driver.findElement(By.name("remember_me")).click();
-        driver.findElement(By.name("login")).click();
+        loginAdminPanel();
 
         driver.findElement(By.cssSelector("ul#box-apps-menu li:nth-child(2) a")).click();
         driver.findElement(By.cssSelector("td#content > div > a.button:nth-child(2)")).click();
@@ -476,6 +462,28 @@ public class Tests {
         }
     }
 
+    @Test
+    public void testOpenWindow() {
+        WebDriverWait wait = new WebDriverWait(driver, 10);
+        driver.get("http://192.168.64.2/litecart/admin");
+        loginAdminPanel();
+
+        driver.get("http://192.168.64.2/litecart/admin/?app=countries&doc=countries");
+        driver.findElement(By.cssSelector("table.dataTable tr:nth-child(2) a[title='Edit']")).click();
+
+        int sizeListLinks = driver.findElements(By.cssSelector("i.fa-external-link")).size();
+
+        for (int i = 0; i < sizeListLinks; i++) {
+            String mainWindow = driver.getWindowHandle();
+            Set<String> oldWindows = driver.getWindowHandles();
+            driver.findElements(By.cssSelector("i.fa-external-link")).get(i).click();
+            String newWindow = wait.until(thereIsWindowOtherThan(oldWindows));
+            driver.switchTo().window(newWindow);
+            driver.close();
+            driver.switchTo().window(mainWindow);
+        }
+    }
+
     private String generateNumbers(int count) {
         final Random random = new Random();
         StringBuilder result = new StringBuilder();
@@ -485,5 +493,22 @@ public class Tests {
         }
 
         return result.toString();
+    }
+
+    private void loginAdminPanel() {
+        driver.findElement(By.name("username")).sendKeys("admin");
+        driver.findElement(By.name("password")).sendKeys("admin");
+        driver.findElement(By.name("remember_me")).click();
+        driver.findElement(By.name("login")).click();
+    }
+
+    private ExpectedCondition<String> thereIsWindowOtherThan(final Set<String> oldWindows) {
+        return new ExpectedCondition<String>() {
+            public String apply(WebDriver driver) {
+                Set<String> handles = driver.getWindowHandles();
+                handles.removeAll(oldWindows);
+                return handles.size() > 0 ? handles.iterator().next() : null;
+            }
+        };
     }
 }

@@ -1,3 +1,4 @@
+import Exceptions.LogBrowserException;
 import Exceptions.ProductException;
 import Exceptions.SortException;
 import Exceptions.StickerException;
@@ -7,7 +8,8 @@ import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.logging.LogEntry;
 import org.openqa.selenium.support.Color;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -26,9 +28,8 @@ public class Tests {
 
     @Before
     public void setUp() {
-        System.setProperty("webdriver.gecko.driver", "/Users/ruathn7/Documents/geckodriver");
-        System.setProperty(FirefoxDriver.SystemProperty.DRIVER_USE_MARIONETTE, "true");
-        driver = new FirefoxDriver();
+        System.setProperty("webdriver.chrome.driver", "/Users/ruathn7/Documents/chromedriver");
+        driver = new ChromeDriver();
         driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
     }
 
@@ -481,6 +482,33 @@ public class Tests {
             driver.switchTo().window(newWindow);
             driver.close();
             driver.switchTo().window(mainWindow);
+        }
+    }
+
+    @Test
+    public void testCheckMessagesInLog() {
+        WebDriverWait wait = new WebDriverWait(driver, 10);
+        driver.get("http://192.168.64.2/litecart/admin");
+        loginAdminPanel();
+
+        driver.get("http://192.168.64.2/litecart/admin/?app=catalog&doc=catalog&category_id=1");
+
+        int sizeListProducts = driver.findElements(By.cssSelector("table.dataTable tr.row a:nth-child(2)")).size();
+
+        for (int i = 1; i < sizeListProducts; i++) {
+            driver.findElements(By.cssSelector("table.dataTable tr.row a:nth-child(2)")).get(i).click();
+
+            wait.until(ExpectedConditions.elementToBeClickable(driver.findElement(By.cssSelector("div.tabs"))));
+
+            List<LogEntry> logEntry = driver.manage().logs().get("browser").getAll();
+            if (logEntry.size() > 0) {
+                for (LogEntry l : logEntry) {
+                    System.out.println(l);
+                }
+                throw new LogBrowserException("В логах браузера есть сообщения, пожалуйста, просмотрите их");
+            }
+
+            driver.get("http://192.168.64.2/litecart/admin/?app=catalog&doc=catalog&category_id=1");
         }
     }
 

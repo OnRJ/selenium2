@@ -463,7 +463,7 @@ public class Tests {
     }
 
     @Test
-    public void testOpenWindow() {
+    public void testOpenLinksInNewWindow() {
         WebDriverWait wait = new WebDriverWait(driver, 10);
         driver.get("http://192.168.64.2/litecart/admin");
         loginAdminPanel();

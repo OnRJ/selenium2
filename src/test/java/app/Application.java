@@ -62,4 +62,12 @@ public class Application {
             wait.until(ExpectedConditions.invisibilityOf(lastItemInTheTable));
         }
     }
+
+    public int getQuantityInCartProductPage() {
+        return productPage.getQuantityInCart();
+    }
+
+    public int getQuantityInCartCartPage() {
+        return cartPage.getItemsCart().size();
+    }
 }

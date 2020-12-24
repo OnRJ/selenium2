@@ -11,12 +11,8 @@ import static org.junit.Assert.assertEquals;
 
 @RunWith(Cucumber.class)
 @CucumberOptions(plugin = {"pretty"})
-public class AddingAndRemoveItemFromCart implements En {
+public class AddingAndRemoveItemFromCart extends CucumberTestBase implements En  {
 
-    private static Application app = new Application();
-    static {
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> { app.quit(); app = null; }));
-    }
     private Product.Builder builder = Product.newEntity();
     private Product product;
 
